@@ -12,28 +12,39 @@ export class AddresssComponent implements OnInit, ControlValueAccessor {
 
   constructor(@Self() public controlDir: NgControl) {
     controlDir.valueAccessor = this;
-   }
 
-  ngOnInit() {
     this.addressForm = new FormGroup({
-      addressLine1: new FormControl('', [Validators.required]),
+      addressLine1: new FormControl(null, [Validators.required]),
       addressLine2: new FormControl(null),
       city: new FormControl(null, [Validators.required]),
       state: new FormControl(null, [Validators.required]),
       zip: new FormControl(null, [Validators.required])
     });
+   }
 
-        // Validation
-        const control = this.controlDir.control;
+  ngOnInit() {
 
-        const validators = control.validator ? [control.validator, Validators.required] : Validators.required;
+    // Validation
+    const control = this.controlDir.control;
 
-       control.setValidators(validators);
-       control.updateValueAndValidity();
+    let validators: any;
+
+    if (!!control.validator) {
+      validators = [control.validator, Validators.required];
+    } else {
+      validators = Validators.required;
+    }
+
+    control.setValidators(validators);
+    control.updateValueAndValidity();
   }
 
   writeValue(data: any) {
-    this.addressForm.setValue(data);
+    console.log('data');
+    console.dir(data);
+    if (!!data) {
+      this.addressForm.setValue(data);
+    }
   }
 
   registerOnChange(fn: any) {
