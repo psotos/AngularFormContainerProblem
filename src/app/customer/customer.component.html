@@ -1,0 +1,10 @@
+<form [formGroup]="customerForm">
+<input type="text" formControlName="firstName" placeholder="First Name" >
+
+<input type="text" formControlName="lastName" placeholder="Last Name" >
+
+<app-addresss-container></app-addresss-container>
+
+<button type="submit">Submit</button>
+<button (click)=cancel($event)>Cancel</button>
+</form>
