@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormArray, FormControl, Validators, ControlContainer } from '@angular/forms';
+import { Component, OnInit, Input } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators, ControlContainer } from '@angular/forms';
 
 @Component({
   selector: 'app-addresss-container',
@@ -7,18 +7,12 @@ import { FormGroup, FormArray, FormControl, Validators, ControlContainer } from 
   styleUrls: ['./addresss-container.component.css']
 })
 export class AddresssContainerComponent implements OnInit {
-  addressesForm: FormGroup;
+  @Input()
+  addressesForm: FormArray;
 
-  constructor(public controlContainer: ControlContainer) { }
+  constructor(public control: ControlContainer) { }
 
   ngOnInit() {
-    this.addressesForm = new FormGroup({
-      addresses: new FormArray([])
-    });
-  }
-
-  getAddresses(): FormArray {
-    return <FormArray>this.addressesForm.get('addresses');
   }
 
   addForm(event: Event) {
@@ -28,11 +22,15 @@ export class AddresssContainerComponent implements OnInit {
 
      const address = new FormControl(null, [Validators.required]);
 
-     this.getAddresses().push(address);
+     this.addressesForm.push(address);
   }
 
   deleteForm(index: number) {
-    this.getAddresses().removeAt(index);
+    this.addressesForm.removeAt(index);
+  }
+
+  print() {
+    console.log('address array', this.addressesForm.value);
   }
 
 }
