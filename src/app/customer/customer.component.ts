@@ -28,4 +28,25 @@ export class CustomerComponent implements OnInit {
     this.customerForm.reset();
   }
 
+  getAddresses(): FormArray {
+    return <FormArray>this.customerForm.get('addresses');
+  }
+
+  deleteForm(index: number) {
+    this.getAddresses().removeAt(index);
+  }
+
+  print() {
+    console.log('customer form', this.customerForm.value);
+  }
+
+  addForm(event: Event) {
+    if (event !== null) {
+      event.preventDefault();
+     }
+
+     const address = new FormControl(null, [Validators.required]);
+
+     this.getAddresses().push(address);
+  }
 }

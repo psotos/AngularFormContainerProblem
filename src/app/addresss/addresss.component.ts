@@ -1,17 +1,26 @@
-import { Component, OnInit, Self } from '@angular/core';
-import { NgControl, ControlValueAccessor, FormGroup, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit, forwardRef } from '@angular/core';
+import { ControlValueAccessor, FormGroup, FormControl, Validators, NG_VALIDATORS, NG_VALUE_ACCESSOR, AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-addresss',
   templateUrl: './addresss.component.html',
-  styleUrls: ['./addresss.component.css']
+  styleUrls: ['./addresss.component.css'],
+  providers: [{
+    provide: NG_VALIDATORS,
+    useExisting: forwardRef(() => AddresssComponent),
+    multi: true,
+  }, {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => AddresssComponent),
+    multi: true,
+  }]
 })
 export class AddresssComponent implements OnInit, ControlValueAccessor {
   addressForm: FormGroup;
-  private onTouched: () => void;
+  onChange: Function = () => { };
+  onTouched: Function = () => { };
 
-  constructor(@Self() public controlDir: NgControl) {
-    controlDir.valueAccessor = this;
+  constructor() {
 
     this.addressForm = new FormGroup({
       addressLine1: new FormControl(null, [Validators.required]),
@@ -24,24 +33,23 @@ export class AddresssComponent implements OnInit, ControlValueAccessor {
 
   ngOnInit() {
 
-    // Validation
-    const control = this.controlDir.control;
+    // // Validation
+    // const control = this.controlDir.control;
 
-    let validators: any;
+    // let validators: any;
 
-    if (!!control.validator) {
-      validators = [control.validator, Validators.required];
-    } else {
-      validators = Validators.required;
-    }
+    // if (!!control.validator) {
+    //   validators = [control.validator, Validators.required];
+    // } else {
+    //   validators = Validators.required;
+    // }
 
-    control.setValidators(validators);
-    control.updateValueAndValidity();
+    // control.setValidators(validators);
+    // control.updateValueAndValidity();
   }
 
   writeValue(data: any) {
-    console.log('data');
-    console.dir(data);
+    console.log('data', data);
     if (!!data) {
       this.addressForm.setValue(data);
     }
@@ -59,6 +67,8 @@ export class AddresssComponent implements OnInit, ControlValueAccessor {
     disabled ? this.addressForm.disable() : this.addressForm.enable();
   }
 
-
+  validate(control: AbstractControl): ValidationErrors {
+    return (!this.addressForm.valid && {invalid: true}) || {};
+  }
 
 }

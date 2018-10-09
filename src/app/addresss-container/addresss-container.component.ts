@@ -1,15 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormArray, FormControl, Validators, ControlContainer } from '@angular/forms';
+import { Component, OnInit, forwardRef } from '@angular/core';
+import { FormGroup, FormArray, FormControl, Validators, ControlContainer, NG_VALIDATORS, NG_VALUE_ACCESSOR, ControlValueAccessor, AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-addresss-container',
   templateUrl: './addresss-container.component.html',
-  styleUrls: ['./addresss-container.component.css']
+  styleUrls: ['./addresss-container.component.css'],
+  providers: [{
+    provide: NG_VALIDATORS,
+    useExisting: forwardRef(() => AddresssContainerComponent),
+    multi: true,
+  }, {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => AddresssContainerComponent),
+    multi: true,
+  }]
 })
-export class AddresssContainerComponent implements OnInit {
+export class AddresssContainerComponent implements OnInit, ControlValueAccessor {
   addressesForm: FormGroup;
+  onChange: Function = () => { };
+  onTouched: Function = () => { };
 
-  constructor(public controlContainer: ControlContainer) { }
+  constructor() { }
 
   ngOnInit() {
     this.addressesForm = new FormGroup({
@@ -33,6 +44,34 @@ export class AddresssContainerComponent implements OnInit {
 
   deleteForm(index: number) {
     this.getAddresses().removeAt(index);
+  }
+
+  print() {
+    console.log('address array', this.addressesForm.value);
+  }
+
+
+  writeValue(data: any) {
+    console.log('data', data);
+    if (!!data) {
+      this.addressesForm.setValue(data);
+    }
+  }
+
+  registerOnChange(fn: any) {
+    this.addressesForm.valueChanges.subscribe(fn);
+  }
+
+  registerOnTouched(fn: () => void ) {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(disabled: boolean) {
+    disabled ? this.addressesForm.disable() : this.addressesForm.enable();
+  }
+
+  validate(control: AbstractControl): ValidationErrors {
+    return (!this.addressesForm.valid && {invalid: true}) || {};
   }
 
 }

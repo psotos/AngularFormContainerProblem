@@ -1,10 +1,24 @@
-<form [formGroup]="customerForm" (ngSubmit)="onSubmit()">
-<input type="text" formControlName="firstName" placeholder="First Name" >
+<form [formGroup]="customerForm"
+      (ngSubmit)="onSubmit()">
+  <input type="text"
+         formControlName="firstName"
+         placeholder="First Name">
 
-<input type="text" formControlName="lastName" placeholder="Last Name" >
+  <input type="text"
+         formControlName="lastName"
+         placeholder="Last Name">
 
-<app-addresss-container formArrayName="addresses"></app-addresss-container>
+  <div formArrayName="addresses"
+       *ngFor="let address of getAddresses().controls; let i = index;">
+    <app-addresss [formControlName]="i"></app-addresss>
+    <button (click)="deleteForm(i)">
+      delete
+    </button>
+    <button (click)="print()">print</button>
 
-<button type="submit">Submit</button>
-<button (click)=cancel($event)>Cancel</button>
+  </div>
+
+  <button type="submit">Submit</button>
+  <button (click)=cancel($event)>Cancel</button>
+  <button (click)="addForm($event)">Add Address</button>
 </form>
