@@ -1,35 +1,18 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
-import { FormGroup, FormArray, FormControl, Validators, ControlContainer, NG_VALIDATORS, NG_VALUE_ACCESSOR, ControlValueAccessor, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Component, OnInit, Input } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators, ControlContainer } from '@angular/forms';
 
 @Component({
   selector: 'app-addresss-container',
   templateUrl: './addresss-container.component.html',
-  styleUrls: ['./addresss-container.component.css'],
-  providers: [{
-    provide: NG_VALIDATORS,
-    useExisting: forwardRef(() => AddresssContainerComponent),
-    multi: true,
-  }, {
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => AddresssContainerComponent),
-    multi: true,
-  }]
+  styleUrls: ['./addresss-container.component.css']
 })
-export class AddresssContainerComponent implements OnInit, ControlValueAccessor {
-  addressesForm: FormGroup;
-  onChange: Function = () => { };
-  onTouched: Function = () => { };
+export class AddresssContainerComponent implements OnInit {
+  @Input()
+  addressesForm: FormArray;
 
-  constructor() { }
+  constructor(public control: ControlContainer) { }
 
   ngOnInit() {
-    this.addressesForm = new FormGroup({
-      addresses: new FormArray([])
-    });
-  }
-
-  getAddresses(): FormArray {
-    return <FormArray>this.addressesForm.get('addresses');
   }
 
   addForm(event: Event) {
@@ -39,39 +22,15 @@ export class AddresssContainerComponent implements OnInit, ControlValueAccessor 
 
      const address = new FormControl(null, [Validators.required]);
 
-     this.getAddresses().push(address);
+     this.addressesForm.push(address);
   }
 
   deleteForm(index: number) {
-    this.getAddresses().removeAt(index);
+    this.addressesForm.removeAt(index);
   }
 
   print() {
     console.log('address array', this.addressesForm.value);
-  }
-
-
-  writeValue(data: any) {
-    console.log('data', data);
-    if (!!data) {
-      this.addressesForm.setValue(data);
-    }
-  }
-
-  registerOnChange(fn: any) {
-    this.addressesForm.valueChanges.subscribe(fn);
-  }
-
-  registerOnTouched(fn: () => void ) {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(disabled: boolean) {
-    disabled ? this.addressesForm.disable() : this.addressesForm.enable();
-  }
-
-  validate(control: AbstractControl): ValidationErrors {
-    return (!this.addressesForm.valid && {invalid: true}) || {};
   }
 
 }

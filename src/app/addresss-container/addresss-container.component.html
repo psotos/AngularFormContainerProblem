@@ -1,7 +1,6 @@
 <button (click)="addForm($event)">Add Address</button>
-<ng-container [formGroup]="addressesForm">
-  <div formArrayName="addresses"
-       *ngFor="let address of getAddresses().controls; let i = index;">
+<form [formGroup]="control.control">
+  <div *ngFor="let address of addressesForm.controls; let i = index;">
     <app-addresss [formControlName]="i"></app-addresss>
     <button (click)="deleteForm(i)">
       delete
@@ -9,4 +8,4 @@
     <button (click)="print()">print</button>
 
   </div>
-</ng-container>
+</form>
